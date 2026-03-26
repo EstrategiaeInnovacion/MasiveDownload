@@ -1,0 +1,132 @@
+<Window x:Class="VucemDownloader.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="VUCEM - Credenciales FIEL" 
+        Height="680" Width="480" 
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#f8fafc">
+    <Grid>
+        <Border Background="#ffffff" CornerRadius="12" Margin="24">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.12" Direction="270"/>
+            </Border.Effect>
+            
+            <StackPanel Margin="32">
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,28">
+                    <Border Background="#0f172a" CornerRadius="10" Width="56" Height="56" Margin="0,0,0,16">
+                        <Viewbox Width="28" Height="28" Margin="14">
+                            <Path Fill="#ffffff" Data="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M17.13,17C15.92,18.85 14.11,20.24 12,20.92C9.89,20.24 8.08,18.85 6.87,17C6.53,16.5 6.24,16 6,15.47C6,15.47 9,14 12,14C15,14 18,15.47 18,15.47C17.76,16 17.47,16.5 17.13,17Z"/>
+                        </Viewbox>
+                    </Border>
+                    <TextBlock Text="Credenciales FIEL"
+                               FontSize="20" FontWeight="600" 
+                               HorizontalAlignment="Center" 
+                               Foreground="#0f172a"/>
+                    <TextBlock Text="Selecciona tu certificado y llave privada"
+                               FontSize="12" 
+                               HorizontalAlignment="Center" 
+                               Foreground="#64748b" 
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <TextBlock Text="Certificado (.cer)" 
+                           FontSize="12" FontWeight="500" 
+                           Foreground="#475569" 
+                           Margin="0,0,0,6"/>
+                <Button x:Name="btnCer" 
+                        Content="Seleccionar archivo..." 
+                        Click="btnCer_Click" 
+                        Height="40" 
+                        Margin="0,0,0,6"
+                        Background="#f8fafc" 
+                        BorderBrush="#e2e8f0"
+                        Foreground="#64748b"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Left"
+                        Padding="12,0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <TextBlock x:Name="lblCerPath" 
+                           Text="Ningún archivo seleccionado" 
+                           FontSize="11" 
+                           Foreground="#94a3b8" 
+                           Margin="0,0,0,16"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock Text="Llave Privada (.key)" 
+                           FontSize="12" FontWeight="500" 
+                           Foreground="#475569" 
+                           Margin="0,0,0,6"/>
+                <Button x:Name="btnKey" 
+                        Content="Seleccionar archivo..." 
+                        Click="btnKey_Click" 
+                        Height="40" 
+                        Margin="0,0,0,6"
+                        Background="#f8fafc" 
+                        BorderBrush="#e2e8f0"
+                        Foreground="#64748b"
+                        Cursor="Hand"
+                        HorizontalContentAlignment="Left"
+                        Padding="12,0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <TextBlock x:Name="lblKeyPath" 
+                           Text="Ningún archivo seleccionado" 
+                           FontSize="11" 
+                           Foreground="#94a3b8" 
+                           Margin="0,0,0,16"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock Text="Contraseña de la Llave" 
+                           FontSize="12" FontWeight="500" 
+                           Foreground="#475569" 
+                           Margin="0,0,0,6"/>
+                <PasswordBox x:Name="txtPassword" 
+                             Height="40" 
+                             VerticalContentAlignment="Center" 
+                             Margin="0,0,0,12"
+                             Background="#f8fafc"
+                             BorderBrush="#e2e8f0"
+                             Padding="12,0"
+                             KeyDown="txtPassword_KeyDown"/>
+
+                <CheckBox x:Name="chkRecordar" 
+                          Content="Recordar credenciales" 
+                          Margin="0,0,0,20"
+                          Foreground="#64748b"/>
+
+                <Button x:Name="btnValidar" 
+                        Content="Validar Credenciales" 
+                        Click="btnValidar_Click" 
+                        Height="44" 
+                        FontSize="14" FontWeight="500"
+                        Background="#0369a1" 
+                        Foreground="White"
+                        Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <ProgressBar x:Name="progressBar" 
+                             Height="4" 
+                             Margin="0,16,0,0"
+                             Visibility="Collapsed"
+                             Background="#e2e8f0"
+                             Foreground="#0369a1"
+                             IsIndeterminate="True"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

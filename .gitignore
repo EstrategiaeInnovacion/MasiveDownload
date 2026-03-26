@@ -1,0 +1,7 @@
+bin/
+obj/
+.vs/
+.opencode/
+nul
+*.user
+*.tmp

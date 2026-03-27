@@ -2,75 +2,84 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Activación de Licencia"
-        Height="420"
-        Width="440"
+        Height="440"
+        Width="460"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#f8fafc">
+        Background="#F8FAFC">
     
     <Grid>
-        <Border Background="#ffffff" CornerRadius="12" Margin="24">
+        <Border Background="#FFFFFF" CornerRadius="16" Margin="20">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.12" Direction="270"/>
+                <DropShadowEffect BlurRadius="30" ShadowDepth="8" Opacity="0.1" Direction="270"/>
             </Border.Effect>
-            <StackPanel VerticalAlignment="Center" Margin="36">
-                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,28">
-                    <Border Background="#0f172a" CornerRadius="12" Width="64" Height="64" Margin="0,0,0,18">
-                        <Viewbox Width="32" Height="32" Margin="16">
-                            <Path Fill="#ffffff" Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+            <StackPanel VerticalAlignment="Center" Margin="40">
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,32">
+                    <Border Background="#1E40AF" CornerRadius="14" Width="72" Height="72" Margin="0,0,0,22">
+                        <Viewbox Width="36" Height="36" Margin="18">
+                            <Path Fill="#FFFFFF" Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
                         </Viewbox>
                     </Border>
                     <TextBlock Text="ACTIVACIÓN DE LICENCIA"
-                               FontSize="20"
-                               FontWeight="600"
-                               Foreground="#0f172a"
+                               FontSize="22"
+                               FontWeight="700"
+                               Foreground="#0F172A"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,8"/>
-                    <TextBlock Text="Ingresa tu clave de licencia para activar el programa"
-                               Foreground="#64748b"
+                    <TextBlock Text="Ingresa tu clave de licencia para activar"
+                               Foreground="#64748B"
                                TextWrapping="Wrap"
                                TextAlignment="Center"
                                FontSize="13"/>
                 </StackPanel>
                 
-                <Border Background="#f8fafc" CornerRadius="6" Padding="4">
-                    <TextBox x:Name="txtLicencia"
-                             FontSize="16"
-                             CharacterCasing="Upper"
-                             MaxLength="16"
-                             TextAlignment="Center"
-                             Padding="12,10"
-                             Background="Transparent"
-                             Foreground="#0f172a"
-                             BorderThickness="0"
-                             KeyDown="txtLicencia_KeyDown"/>
-                </Border>
+                <TextBox x:Name="txtLicencia"
+                         FontSize="18"
+                         CharacterCasing="Upper"
+                         MaxLength="16"
+                         TextAlignment="Center"
+                         Padding="16,14"
+                         Background="#FFFFFF"
+                         Foreground="#0F172A"
+                         BorderBrush="#CBD5E1"
+                         BorderThickness="1"
+                         FontFamily="Consolas"
+                         KeyDown="txtLicencia_KeyDown"/>
                 
                 <Button x:Name="btnActivar"
-                        Content="Activar Licencia"
+                        Content="✓ Activar Licencia"
                         FontSize="14"
-                        FontWeight="500"
-                        Height="44"
-                        Background="#0369a1"
-                        Foreground="White"
+                        FontWeight="600"
+                        Height="48"
+                        Background="#1E40AF"
+                        Foreground="#FFFFFF"
                         BorderThickness="0"
                         Cursor="Hand"
                         Click="btnActivar_Click"
-                        Margin="0,20,0,0"
-                        Padding="24,0">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="6"/>
-                        </Style>
-                    </Button.Resources>
+                        Margin="0,24,0,0"
+                        Padding="28,0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#1E3A8A"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
                 
                 <ProgressBar x:Name="progressBar"
                              Height="4"
-                             Margin="0,16,0,0"
+                             Margin="0,20,0,0"
                              Visibility="Collapsed"
-                             Background="#e2e8f0"
-                             Foreground="#0369a1"
+                             Style="{StaticResource ModernProgressBar}"
                              IsIndeterminate="True"/>
                 
                 <TextBlock x:Name="lblResultado"
@@ -78,7 +87,7 @@
                            Margin="0,16,0,0"
                            TextWrapping="Wrap"
                            FontSize="13"
-                           Foreground="#64748b"/>
+                           Foreground="#64748B"/>
             </StackPanel>
         </Border>
     </Grid>

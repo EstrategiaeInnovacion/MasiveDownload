@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,6 +7,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <StartupObject>VucemDownloader.App</StartupObject>
+    
+    <!-- Configuración para exe standalone -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    
+    <!-- Info de la aplicación -->
+    <AssemblyName>VucemSuite</AssemblyName>
+    <Product>VUCEM Suite</Product>
+    <Version>1.0.0</Version>
+    <Company>VUCEM</Company>
+    <Description>Gestor de Expedientes VUCEM</Description>
   </PropertyGroup>
 
   <ItemGroup>

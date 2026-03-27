@@ -14,7 +14,7 @@ namespace VucemDownloader
 
         private static readonly string SettingsFile = Path.Combine(AppDataPath, "settings.json");
 
-        public static void SaveCredentials(string rutaCer, string rutaKey, string password)
+        public static void SaveCredentials(string rutaCer, string rutaKey, string password, string webservicePassword = "")
         {
             try
             {
@@ -26,6 +26,7 @@ namespace VucemDownloader
                     RutaCertificado = rutaCer,
                     RutaLlave = rutaKey,
                     Contrasena = EncryptPassword(password),
+                    WebservicePassword = EncryptPassword(webservicePassword),
                     Guardado = DateTime.Now
                 };
 
@@ -42,7 +43,7 @@ namespace VucemDownloader
             }
         }
 
-        public static (string rutaCer, string rutaKey, string password)? LoadCredentials()
+        public static (string rutaCer, string rutaKey, string password, string webservicePassword)? LoadCredentials()
         {
             try
             {
@@ -59,7 +60,8 @@ namespace VucemDownloader
                     return null;
 
                 string password = DecryptPassword(settings.Contrasena);
-                return (settings.RutaCertificado, settings.RutaLlave, password);
+                string wsPassword = DecryptPassword(settings.WebservicePassword);
+                return (settings.RutaCertificado, settings.RutaLlave, password, wsPassword);
             }
             catch
             {
@@ -114,6 +116,9 @@ namespace VucemDownloader
 
             [JsonPropertyName("contrasena")]
             public string Contrasena { get; set; } = string.Empty;
+
+            [JsonPropertyName("webservicePassword")]
+            public string WebservicePassword { get; set; } = string.Empty;
 
             [JsonPropertyName("guardado")]
             public DateTime Guardado { get; set; }

@@ -1,8 +1,9 @@
 <Window x:Class="VucemDownloader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="VUCEM Suite - Descarga Masiva" 
-        Height="650" Width="1000" 
+        Title="VUCEM Suite - Descarga Masiva de Expedientes" 
+        Height="750" Width="1100" 
+        MinHeight="600" MinWidth="900"
         WindowStartupLocation="CenterScreen"
         Background="#f8fafc">
     <Grid>
@@ -23,7 +24,7 @@
                         <TextBlock Text="VUCEM Suite" 
                                    FontSize="22" FontWeight="600" 
                                    Foreground="#0f172a"/>
-                        <TextBlock Text="Descarga Masiva de Comprobantes" 
+                        <TextBlock Text="Descarga Masiva de Expedientes" 
                                    FontSize="11" 
                                    Foreground="#64748b"/>
                     </StackPanel>
@@ -32,16 +33,30 @@
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Right" 
                             VerticalAlignment="Center">
-                    <Border Background="#f1f5f9" CornerRadius="20" Padding="14,8">
+                    <Border Background="#f1f5f9" CornerRadius="20" Padding="14,8" Margin="0,0,12,0">
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="8" Height="8" Fill="#0369a1" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Ellipse x:Name="ellipseStatus" Width="8" Height="8" Fill="#dc2626" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock x:Name="lblSesion" 
-                                       Text="Sin sesión VUCEM" 
+                                       Text="Sin sesión activa" 
                                        FontSize="12" 
                                        Foreground="#475569" 
                                        VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
+                    <Button Content="Configuración" 
+                            Height="36"
+                            FontSize="12" FontWeight="500"
+                            Background="#f1f5f9" 
+                            Foreground="#475569"
+                            Click="btnConfiguracion_Click"
+                            Cursor="Hand"
+                            Padding="16,0">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
@@ -49,7 +64,8 @@
         <TabControl Grid.Row="1" 
                     Margin="24" 
                     Background="Transparent"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    SelectionChanged="TabControl_SelectionChanged">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -69,7 +85,7 @@
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter TargetName="Border" Property="Background" Value="#ffffff"/>
                                         <Setter TargetName="Border" Property="BorderBrush" Value="#0369a1"/>
-                                        <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
+                                        <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,3"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="Border" Property="Background" Value="#e2e8f0"/>
@@ -85,392 +101,584 @@
                 </Style>
             </TabControl.Resources>
 
-            <TabItem Header="Descargar CFDIs">
+            <TabItem Header="COVEs">
                 <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
                     </Border.Effect>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock Text="Descarga Masiva de Comprobantes Fiscales" 
-                                       FontSize="18" FontWeight="600" 
-                                       Foreground="#0f172a" 
-                                       Margin="0,0,0,24"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="130"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="48"/>
-                                    <RowDefinition Height="48"/>
-                                    <RowDefinition Height="48"/>
-                                    <RowDefinition Height="48"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Fecha Inicio:" 
-                                           Foreground="#64748b" VerticalAlignment="Center"/>
-                                <DatePicker Grid.Row="0" Grid.Column="1" 
-                                           x:Name="dtpFechaInicio" 
-                                           Background="#f8fafc" 
-                                           BorderBrush="#e2e8f0"
-                                           Padding="10,8"/>
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Fecha Fin:" 
-                                           Foreground="#64748b" VerticalAlignment="Center"/>
-                                <DatePicker Grid.Row="1" Grid.Column="1" 
-                                           x:Name="dtpFechaFin" 
-                                           Background="#f8fafc" 
-                                           BorderBrush="#e2e8f0"
-                                           Padding="10,8"/>
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="RFC Emisor:" 
-                                           Foreground="#64748b" VerticalAlignment="Center"/>
-                                <TextBox Grid.Row="2" Grid.Column="1" 
-                                        x:Name="txtRfcEmisor" 
-                                        Background="#f8fafc" 
-                                        BorderBrush="#e2e8f0"
-                                        Padding="10,8"
-                                        VerticalContentAlignment="Center"/>
-
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Estado:" 
-                                           Foreground="#64748b" VerticalAlignment="Center"/>
-                                <ComboBox Grid.Row="3" Grid.Column="1" 
-                                         x:Name="cmbEstado" 
-                                         Background="#f8fafc" 
-                                         BorderBrush="#e2e8f0"
-                                         Padding="10,8">
-                                    <ComboBoxItem Content="Todos" IsSelected="True"/>
-                                    <ComboBoxItem Content="Vigente"/>
-                                    <ComboBoxItem Content="Cancelado"/>
-                                </ComboBox>
-                            </Grid>
-
-                            <Button x:Name="btnDescargar" 
-                                    Content="Iniciar Descarga" 
-                                    Height="44" 
-                                    FontSize="14" FontWeight="500"
-                                    Background="#0369a1" 
-                                    Foreground="White"
-                                    Margin="0,28,0,12"
-                                    Click="btnDescargar_Click"
-                                    Cursor="Hand"
-                                    HorizontalAlignment="Left"
-                                    Padding="24,0">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="6"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-
-                            <ProgressBar x:Name="progressDescargas" 
-                                        Height="6" 
-                                        Margin="0,8,0,8"
-                                        Visibility="Collapsed"
-                                        Background="#e2e8f0"
-                                        Foreground="#0369a1"/>
-
-                            <TextBlock x:Name="lblProgreso" 
-                                       Text="" 
-                                       FontSize="12" 
-                                       Foreground="#64748b"/>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Border>
-            </TabItem>
-
-            <TabItem Header="Consultar">
-                <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
-                    </Border.Effect>
-                    <StackPanel>
-                        <TextBlock Text="Consulta de Comprobantes" 
+                        <TextBlock Grid.Row="0" Text="Descarga Masiva de COVEs" 
                                    FontSize="18" FontWeight="600" 
                                    Foreground="#0f172a" 
-                                   Margin="0,0,0,24"/>
+                                   Margin="0,0,0,20"/>
 
-                        <TextBlock Text="Buscar por UUID:" Foreground="#64748b" Margin="0,0,0,8"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="110"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" 
-                                    x:Name="txtUuid" 
-                                    Background="#f8fafc" 
-                                    BorderBrush="#e2e8f0"
-                                    Padding="12,10"
-                                    Margin="0,0,12,0"/>
-                            <Button Grid.Column="1" 
-                                   Content="Buscar" 
-                                   Background="#0369a1" 
-                                   Foreground="White"
-                                   Click="btnBuscar_Click">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="6"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                        </Grid>
+                        <Border Grid.Row="1" Background="#f8fafc" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                        <DataGrid x:Name="dgResultados" 
-                                  Margin="0,24,0,0" 
-                                  AutoGenerateColumns="True"
+                                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha Inicio" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dtpCoveFechaInicio" 
+                                               Background="#ffffff" 
+                                               BorderBrush="#e2e8f0"
+                                               Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha Fin" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dtpCoveFechaFin" 
+                                               Background="#ffffff" 
+                                               BorderBrush="#e2e8f0"
+                                               Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                                    <TextBlock Text="Folio / eDocument" FontSize="11" FontWeight="SemiBold" Foreground="#0369a1" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtCoveFolio" 
+                                             Background="#f0f9ff" 
+                                             BorderBrush="#bae6fd"
+                                             Padding="10,8"
+                                             VerticalContentAlignment="Center"
+                                             ToolTip="Ingrese el eDocument para búsqueda directa"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                                    <TextBlock Text="RFC Emisor" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtCoveRfcEmisor" 
+                                             Background="#ffffff" 
+                                             BorderBrush="#e2e8f0"
+                                             Padding="10,8"
+                                             VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4" Margin="0,0,12,0">
+                                    <TextBlock Text="Estado" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <ComboBox x:Name="cmbCoveEstado" 
+                                             Background="#ffffff" 
+                                             BorderBrush="#e2e8f0"
+                                             Padding="10,8">
+                                        <ComboBoxItem Content="Todos" IsSelected="True"/>
+                                        <ComboBoxItem Content="Completado"/>
+                                        <ComboBoxItem Content="Pendiente"/>
+                                        <ComboBoxItem Content="Procesando"/>
+                                        <ComboBoxItem Content="Rechazado"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <Button Grid.Column="5" 
+                                        Content="Buscar" 
+                                        Height="36"
+                                        FontSize="13" FontWeight="600"
+                                        Background="#0369a1" 
+                                        Foreground="White"
+                                        Click="btnBuscarCoves_Click"
+                                        Cursor="Hand"
+                                        Padding="24,0"
+                                        VerticalAlignment="Bottom">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="2" 
+                                  x:Name="dgCoves" 
+                                  AutoGenerateColumns="False"
                                   IsReadOnly="True"
-                                  Height="340"
+                                  SelectionMode="Extended"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
                                   Background="#ffffff"
                                   BorderBrush="#e2e8f0"
                                   BorderThickness="1"
                                   GridLinesVisibility="Horizontal"
-                                  HorizontalGridLinesBrush="#e2e8f0"/>
-                    </StackPanel>
+                                  HorizontalGridLinesBrush="#f1f5f9"
+                                  RowBackground="#ffffff"
+                                  AlternatingRowBackground="#fafafa">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Binding="{Binding Seleccionado}" Width="40"/>
+                                <DataGridTextColumn Header="No. Operación" Binding="{Binding NumeroOperacion}" Width="150"/>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaCreacion, StringFormat=dd/MM/yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="RFC Emisor" Binding="{Binding RfcEmisor}" Width="130"/>
+                                <DataGridTextColumn Header="RFC Receptor" Binding="{Binding RfcReceptor}" Width="130"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoOperacion}" Width="100"/>
+                                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                                <DataGridTextColumn Header="Valor" Binding="{Binding ValorTotal, StringFormat=C2}" Width="120"/>
+                                <DataGridTextColumn Header="Moneda" Binding="{Binding Moneda}" Width="70"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0">
+                            <Button Content="Descargar PDF" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#059669" 
+                                    Foreground="White"
+                                    Click="btnDescargarCovePdf_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0"
+                                    Margin="0,0,12,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            <Button Content="Descargar XML" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#7c3aed" 
+                                    Foreground="White"
+                                    Click="btnDescargarCoveXml_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0"
+                                    Margin="0,0,12,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            <Button Content="Ver Detalle" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#f1f5f9" 
+                                    Foreground="#475569"
+                                    BorderBrush="#e2e8f0"
+                                    Click="btnVerDetalleCove_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
                 </Border>
             </TabItem>
 
-            <TabItem Header="Cancelar">
+            <TabItem Header="Manifestaciones (E2)">
+                <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Descarga Masiva de Manifestaciones de Valor" 
+                                   FontSize="18" FontWeight="600" 
+                                   Foreground="#0f172a" 
+                                   Margin="0,0,0,20"/>
+
+                        <Border Grid.Row="1" Background="#f8fafc" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha Inicio" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dtpManifFechaInicio" 
+                                               Background="#ffffff" 
+                                               BorderBrush="#e2e8f0"
+                                               Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha Fin" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dtpManifFechaFin" 
+                                               Background="#ffffff" 
+                                               BorderBrush="#e2e8f0"
+                                               Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                                    <TextBlock Text="Folio / Operación" FontSize="11" FontWeight="SemiBold" Foreground="#0369a1" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtManifFolio" 
+                                             Background="#f0f9ff" 
+                                             BorderBrush="#bae6fd"
+                                             Padding="10,8"
+                                             VerticalContentAlignment="Center"
+                                             ToolTip="Ingrese el eDocument o Número de Operación"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                                    <TextBlock Text="RFC Solicitante" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtManifRfc" 
+                                             Background="#ffffff" 
+                                             BorderBrush="#e2e8f0"
+                                             Padding="10,8"
+                                             VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4" Margin="0,0,12,0">
+                                    <TextBlock Text="Estado" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <ComboBox x:Name="cmbManifEstado" 
+                                             Background="#ffffff" 
+                                             BorderBrush="#e2e8f0"
+                                             Padding="10,8">
+                                        <ComboBoxItem Content="Todos" IsSelected="True"/>
+                                        <ComboBoxItem Content="Completado"/>
+                                        <ComboBoxItem Content="Pendiente"/>
+                                        <ComboBoxItem Content="Procesando"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <Button Grid.Column="5" 
+                                        Content="Buscar" 
+                                        Height="36"
+                                        FontSize="13" FontWeight="600"
+                                        Background="#0369a1" 
+                                        Foreground="White"
+                                        Click="btnBuscarManifestaciones_Click"
+                                        Cursor="Hand"
+                                        Padding="24,0"
+                                        VerticalAlignment="Bottom">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="2" 
+                                  x:Name="dgManifestaciones" 
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Extended"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  Background="#ffffff"
+                                  BorderBrush="#e2e8f0"
+                                  BorderThickness="1"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="#f1f5f9"
+                                  RowBackground="#ffffff"
+                                  AlternatingRowBackground="#fafafa">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Binding="{Binding Seleccionado}" Width="40"/>
+                                <DataGridTextColumn Header="No. Operación" Binding="{Binding NumeroOperacion}" Width="150"/>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaCreacion, StringFormat=dd/MM/yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="RFC Solicitante" Binding="{Binding RfcSolicitante}" Width="130"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoOperacion}" Width="80"/>
+                                <DataGridTextColumn Header="No. Pedimento" Binding="{Binding NumeroPedimento}" Width="130"/>
+                                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                                <DataGridTextColumn Header="Valor Total" Binding="{Binding ValorTotal, StringFormat=C2}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0">
+                            <Button Content="Descargar PDF" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#059669" 
+                                    Foreground="White"
+                                    Click="btnDescargarManifPdf_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0"
+                                    Margin="0,0,12,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            <Button Content="Descargar XML" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#7c3aed" 
+                                    Foreground="White"
+                                    Click="btnDescargarManifXml_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0"
+                                    Margin="0,0,12,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            <Button Content="Ver Detalle" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#f1f5f9" 
+                                    Foreground="#475569"
+                                    BorderBrush="#e2e8f0"
+                                    Click="btnVerDetalleManif_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Pedimentos">
+                <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Consulta de Pedimentos" 
+                                   FontSize="18" FontWeight="600" 
+                                   Foreground="#0f172a" 
+                                   Margin="0,0,0,20"/>
+
+                        <Border Grid.Row="1" Background="#f8fafc" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha Inicio" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dtpPedFechaInicio" 
+                                               Background="#ffffff" 
+                                               BorderBrush="#e2e8f0"
+                                               Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha Fin" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dtpPedFechaFin" 
+                                               Background="#ffffff" 
+                                               BorderBrush="#e2e8f0"
+                                               Padding="8,6"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                                    <TextBlock Text="RFC Importador" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtPedRfc" 
+                                             Background="#ffffff" 
+                                             BorderBrush="#e2e8f0"
+                                             Padding="10,8"
+                                             VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                                    <TextBlock Text="Aduana" FontSize="11" Foreground="#64748b" Margin="0,0,0,6"/>
+                                    <ComboBox x:Name="cmbPedAduana" 
+                                             Background="#ffffff" 
+                                             BorderBrush="#e2e8f0"
+                                             Padding="10,8">
+                                        <ComboBoxItem Content="Todas" IsSelected="True"/>
+                                        <ComboBoxItem Content="Manzanillo"/>
+                                        <ComboBoxItem Content="Veracruz"/>
+                                        <ComboBoxItem Content="Guadalajara"/>
+                                        <ComboBoxItem Content="Mexico"/>
+                                        <ComboBoxItem Content="Tijuana"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <Button Grid.Column="4" 
+                                        Content="Buscar" 
+                                        Height="36"
+                                        FontSize="13" FontWeight="500"
+                                        Background="#0369a1" 
+                                        Foreground="White"
+                                        Click="btnBuscarPedimentos_Click"
+                                        Cursor="Hand"
+                                        Padding="24,0"
+                                        VerticalAlignment="Bottom">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="2" 
+                                  x:Name="dgPedimentos" 
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Extended"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  Background="#ffffff"
+                                  BorderBrush="#e2e8f0"
+                                  BorderThickness="1"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="#f1f5f9"
+                                  RowBackground="#ffffff"
+                                  AlternatingRowBackground="#fafafa">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Binding="{Binding Seleccionado}" Width="40"/>
+                                <DataGridTextColumn Header="No. Pedimento" Binding="{Binding NumeroPedimento}" Width="140"/>
+                                <DataGridTextColumn Header="Fecha Pago" Binding="{Binding FechaPago, StringFormat=dd/MM/yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="RFC Importador" Binding="{Binding RfcImportador}" Width="130"/>
+                                <DataGridTextColumn Header="Aduana" Binding="{Binding Aduana}" Width="120"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoOperacion}" Width="100"/>
+                                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                                <DataGridTextColumn Header="Valor Aduana" Binding="{Binding ValorAduana, StringFormat=C2}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0">
+                            <Button Content="Descargar PDF" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#059669" 
+                                    Foreground="White"
+                                    Click="btnDescargarPedimentoPdf_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0"
+                                    Margin="0,0,12,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            <Button Content="Ver Detalle" 
+                                    Height="40"
+                                    FontSize="13" FontWeight="500"
+                                    Background="#f1f5f9" 
+                                    Foreground="#475569"
+                                    BorderBrush="#e2e8f0"
+                                    Click="btnVerDetallePedimento_Click"
+                                    Cursor="Hand"
+                                    Padding="20,0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Reportes">
                 <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
                     </Border.Effect>
                     <StackPanel>
-                        <TextBlock Text="Cancelación de CFDI" 
+                        <TextBlock Text="Reportes y Estadisticas" 
                                    FontSize="18" FontWeight="600" 
                                    Foreground="#0f172a" 
                                    Margin="0,0,0,24"/>
 
-                        <TextBlock Text="UUID del CFDI a cancelar:" Foreground="#64748b" Margin="0,0,0,8"/>
-                        <TextBox x:Name="txtUuidCancelar" 
-                                Background="#f8fafc" 
-                                BorderBrush="#e2e8f0"
-                                Padding="12,10"
-                                Margin="0,0,0,16"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Motivo de cancelación:" Foreground="#64748b" Margin="0,0,0,8"/>
-                        <ComboBox x:Name="cmbMotivo" 
-                                 Background="#f8fafc" 
-                                 BorderBrush="#e2e8f0"
-                                 Padding="12,10"
-                                 Margin="0,0,0,20">
-                            <ComboBoxItem Content="01 - Comprobante modificado"/>
-                            <ComboBoxItem Content="02 - Comprobante emitido incorrectamente"/>
-                            <ComboBoxItem Content="03 - No se llevó a cabo la operación"/>
-                            <ComboBoxItem Content="04 - Operación nominativa"/>
-                        </ComboBox>
-
-                        <Button x:Name="btnCancelar" 
-                                Content="Solicitar Cancelación" 
-                                Height="44" 
-                                FontSize="14" FontWeight="500"
-                                Background="#dc2626" 
-                                Foreground="White"
-                                Click="btnCancelar_Click"
-                                Cursor="Hand"
-                                HorizontalAlignment="Left"
-                                Padding="24,0">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="6"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-                    </StackPanel>
-                </Border>
-            </TabItem>
-
-            <TabItem Header="Validar XML">
-                <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
-                    </Border.Effect>
-                    <StackPanel>
-                        <TextBlock Text="Validación de CFDI" 
-                                   FontSize="18" FontWeight="600" 
-                                   Foreground="#0f172a" 
-                                   Margin="0,0,0,24"/>
-
-                        <Button x:Name="btnSeleccionarXml" 
-                                Content="Seleccionar archivo XML" 
-                                Height="44" 
-                                Background="#f1f5f9" 
-                                BorderBrush="#e2e8f0"
-                                Foreground="#475569"
-                                Click="btnSeleccionarXml_Click"
-                                HorizontalAlignment="Left"
-                                Padding="20,0"
-                                Cursor="Hand">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="6"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-
-                        <TextBlock x:Name="lblArchivoXml" 
-                                   Text="Ningún archivo seleccionado" 
-                                   FontSize="12" 
-                                   Foreground="#64748b"
-                                   Margin="0,12,0,16"/>
-
-                        <Button x:Name="btnValidarXml" 
-                                Content="Validar CFDI" 
-                                Height="44" 
-                                FontSize="14" FontWeight="500"
-                                Background="#059669" 
-                                Foreground="White"
-                                Click="btnValidarXml_Click"
-                                HorizontalAlignment="Left"
-                                Padding="24,0"
-                                Cursor="Hand">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="6"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-
-                        <TextBlock x:Name="lblResultadoValidacion" 
-                                   Text="" 
-                                   FontSize="13" 
-                                   Foreground="#475569"
-                                   Margin="0,20,0,0"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-            </TabItem>
-
-            <TabItem Header="Configuración">
-                <Border Background="#ffffff" CornerRadius="0,12,12,12" Padding="28">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Direction="270"/>
-                    </Border.Effect>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock Text="Información de la Aplicación" 
-                                       FontSize="18" FontWeight="600" 
-                                       Foreground="#0f172a" 
-                                       Margin="0,0,0,20"/>
-
-                            <Border Background="#f8fafc" 
-                                    CornerRadius="8" 
-                                    Padding="20" 
-                                    Margin="0,0,0,24"
-                                    BorderBrush="#e2e8f0"
-                                    BorderThickness="1">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0" Background="#e0f2fe" CornerRadius="8" Width="44" Height="44" Margin="0,0,16,0">
-                                        <Viewbox Width="22" Height="22" Margin="10">
-                                            <Path Fill="#0369a1" Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
-                                        </Viewbox>
-                                    </Border>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="Licencia" 
-                                                   FontSize="14" FontWeight="600" 
-                                                   Foreground="#0f172a" 
-                                                   Margin="0,0,0,4"/>
-                                        <TextBlock x:Name="lblLicencia" 
-                                                   Text="Clave: No activada" 
-                                                   FontSize="13" 
-                                                   Foreground="#475569"/>
-                                        <TextBlock x:Name="lblVencimientoLicencia" 
-                                                   Text="Vencimiento: -" 
-                                                   FontSize="12" 
-                                                   Foreground="#64748b"
-                                                   Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <TextBlock Text="Configuración de Sesión VUCEM" 
-                                       FontSize="18" FontWeight="600" 
-                                       Foreground="#0f172a" 
-                                       Margin="0,8,0,20"/>
-
-                            <Border Background="#f8fafc" 
-                                    CornerRadius="8" 
-                                    Padding="20" 
-                                    Margin="0,0,0,24"
-                                    BorderBrush="#e2e8f0"
-                                    BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="Credenciales FIEL"
-                                               FontSize="14" FontWeight="600" 
-                                               Foreground="#0f172a" 
-                                               Margin="0,0,0,4"/>
-                                    <TextBlock Text="Archivo .cer y .key para operaciones con el SAT"
-                                               FontSize="12" 
-                                               Foreground="#64748b"
-                                               Margin="0,0,0,16"/>
-
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,8,12">
-                                            <TextBlock Text="Certificado (.cer)" FontSize="11" Foreground="#64748b" Margin="0,0,0,4"/>
-                                            <TextBlock x:Name="lblInfoCert" Text="No cargado" FontSize="13" Foreground="#475569"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="8,0,0,12">
-                                            <TextBlock Text="Vigencia" FontSize="11" Foreground="#64748b" Margin="0,0,0,4"/>
-                                            <TextBlock x:Name="lblVigencia" Text="-" FontSize="13" Foreground="#475569"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                        <Button x:Name="btnIniciarSesion" 
-                                                Content="Seleccionar Certificados" 
-                                                Height="36" 
-                                                FontSize="12" FontWeight="500"
-                                                Background="#0369a1" 
-                                                Foreground="White"
-                                                Click="btnIniciarSesion_Click"
-                                                Cursor="Hand"
-                                                Padding="16,0">
-                                            <Button.Resources>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="CornerRadius" Value="6"/>
-                                                </Style>
-                                            </Button.Resources>
-                                        </Button>
-
-                                        <Button x:Name="btnCerrarSesion" 
-                                                Content="Limpiar" 
-                                                Height="36" 
-                                                FontSize="12" FontWeight="500"
-                                                Background="#dc2626" 
-                                                Foreground="White"
-                                                Click="btnCerrarSesion_Click"
-                                                Cursor="Hand"
-                                                Visibility="Collapsed"
-                                                Margin="10,0,0,0"
-                                                Padding="16,0">
-                                            <Button.Resources>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="CornerRadius" Value="6"/>
-                                                </Style>
-                                            </Button.Resources>
-                                        </Button>
-                                    </StackPanel>
+                            <Border Grid.Column="0" Background="#f0f9ff" CornerRadius="12" Padding="24" Margin="0,0,12,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="Total COVEs" FontSize="14" Foreground="#475569" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblTotalCoves" Text="0" FontSize="36" FontWeight="700" Foreground="#0369a1" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                                 </StackPanel>
                             </Border>
-                        </StackPanel>
-                    </ScrollViewer>
+
+                            <Border Grid.Column="1" Background="#f0fdf4" CornerRadius="12" Padding="24" Margin="0,0,12,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="Total Manifestaciones" FontSize="14" Foreground="#475569" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblTotalManifestaciones" Text="0" FontSize="36" FontWeight="700" Foreground="#059669" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#fef2f2" CornerRadius="12" Padding="24">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="Total Pedimentos" FontSize="14" Foreground="#475569" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblTotalPedimentos" Text="0" FontSize="36" FontWeight="700" Foreground="#dc2626" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#f8fafc" CornerRadius="8" Padding="24" Margin="0,24,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Informacion de la Sesion" FontSize="16" FontWeight="600" Foreground="#0f172a" Margin="0,0,0,16"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="RFC:" FontWeight="500" Foreground="#475569"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="lblReporteRfc" Text="No disponible"/>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Certificado:" FontWeight="500" Foreground="#475569" Margin="0,8,0,0"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="lblReporteCert" Text="No disponible" Margin="0,8,0,0"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Licencia:" FontWeight="500" Foreground="#475569" Margin="0,8,0,0"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="lblReporteLicencia" Text="No disponible" Margin="0,8,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </Border>
             </TabItem>
         </TabControl>
+
+        <Border x:Name="progressOverlay" Grid.RowSpan="2" Background="#80000000" Visibility="Collapsed">
+            <Border Background="#ffffff" CornerRadius="12" Padding="40" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <ProgressBar x:Name="progressBar" IsIndeterminate="True" Width="300" Height="6"/>
+                    <TextBlock x:Name="lblProgreso" Text="Procesando..." FontSize="14" Foreground="#475569" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                </StackPanel>
+            </Border>
+        </Border>
     </Grid>
 </Window>

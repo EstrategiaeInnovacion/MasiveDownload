@@ -17,10 +17,12 @@ namespace VucemDownloader
         private string rutaCer = string.Empty;
         private string rutaKey = string.Empty;
         private string rfcValidado = string.Empty;
+        private string webservicePassword = string.Empty;
         private X509Certificate2? certificadoValidado;
         private AsymmetricKeyParameter? llavePrivadaValidada;
 
         public string RfcValidado => rfcValidado;
+        public string WebservicePassword => webservicePassword;
         public X509Certificate2? CertificadoValidado => certificadoValidado;
         public AsymmetricKeyParameter? LlavePrivadaValidada => llavePrivadaValidada;
 
@@ -29,7 +31,7 @@ namespace VucemDownloader
             InitializeComponent();
         }
 
-        public void CargarCredencialesGuardadas(string cer, string key, string password)
+        public void CargarCredencialesGuardadas(string cer, string key, string password, string wsPassword = "")
         {
             rutaCer = cer;
             rutaKey = key;
@@ -40,6 +42,7 @@ namespace VucemDownloader
             lblKeyPath.Foreground = new System.Windows.Media.SolidColorBrush(
                 (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#27ae60"));
             txtPassword.Password = password;
+            txtWebservicePassword.Password = wsPassword;
             chkRecordar.IsChecked = true;
         }
 
@@ -87,6 +90,12 @@ namespace VucemDownloader
                 return;
             }
 
+            if (string.IsNullOrEmpty(txtWebservicePassword.Password))
+            {
+                MessageBox.Show("Por favor, ingresa la clave de webservice de VUCEM.", "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             btnValidar.IsEnabled = false;
             progressBar.Visibility = Visibility.Visible;
             progressBar.IsIndeterminate = true;
@@ -94,9 +103,10 @@ namespace VucemDownloader
             try
             {
                 string password = txtPassword.Password;
+                string wsPassword = txtWebservicePassword.Password;
                 bool recordar = chkRecordar.IsChecked == true;
 
-                var resultado = ValidarCredenciales(password, recordar);
+                var resultado = ValidarCredenciales(password, wsPassword, recordar);
 
                 if (resultado.exito)
                 {
@@ -119,7 +129,7 @@ namespace VucemDownloader
             }
         }
 
-        private (bool exito, string rfc, X509Certificate2 certificado) ValidarCredenciales(string password, bool recordar)
+        private (bool exito, string rfc, X509Certificate2 certificado) ValidarCredenciales(string password, string wsPassword, bool recordar)
         {
             X509Certificate2 cert = X509CertificateLoader.LoadCertificateFromFile(rutaCer);
             var (modulusCert, exponentCert) = ExtractPublicKeyDetails(cert);
@@ -162,20 +172,21 @@ namespace VucemDownloader
             }
 
             rfcValidado = GetRFCFromCert(cert);
+            webservicePassword = wsPassword;
             certificadoValidado = cert;
             llavePrivadaValidada = privateKey;
 
             if (recordar)
             {
-                GuardarCredenciales(rutaCer, rutaKey, password);
+                GuardarCredenciales(rutaCer, rutaKey, password, wsPassword);
             }
 
             return (true, rfcValidado, cert);
         }
 
-        private void GuardarCredenciales(string cer, string key, string password)
+        private void GuardarCredenciales(string cer, string key, string password, string wsPassword)
         {
-            CredentialManager.SaveCredentials(cer, key, password);
+            CredentialManager.SaveCredentials(cer, key, password, wsPassword);
         }
 
         private (Org.BouncyCastle.Math.BigInteger modulus, Org.BouncyCastle.Math.BigInteger exponent) ExtractPublicKeyDetails(X509Certificate2 cert)

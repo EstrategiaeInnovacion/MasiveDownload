@@ -37,11 +37,4 @@ namespace VucemDownloader
             }
         }
     }
-
-    public class SessionInfo
-    {
-        public string RFC { get; set; } = string.Empty;
-        public System.Security.Cryptography.X509Certificates.X509Certificate2? Certificado { get; set; }
-        public Org.BouncyCastle.Crypto.AsymmetricKeyParameter? LlavePrivada { get; set; }
-    }
 }
